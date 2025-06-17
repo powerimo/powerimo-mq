@@ -78,7 +78,7 @@ public class JsonConverter implements MessageConverter {
      * {@inheritDoc}
      *
      * Deserializes the given byte array into a Message object using metadata from the provided envelope and AMQP properties.
-     * Determines the payload type from the data-class header if present, otherwise deserializes as Map<String, Object>.
+     * Determines the payload type from the data-class header if present, otherwise deserializes as Map.
      */
     @Override
     public Message decode(String s, Envelope envelope, AMQP.BasicProperties basicProperties, byte[] bytes)

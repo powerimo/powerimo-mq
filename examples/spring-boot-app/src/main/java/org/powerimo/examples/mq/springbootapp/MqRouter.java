@@ -13,16 +13,6 @@ import org.springframework.stereotype.Component;
 @RabbitMessageListener(queue = "test")
 public class MqRouter {
 
-    //@Bean
-    public MessageRouter router() {
-        return RoutingKeyRouter.builder()
-                .handler("key1.event",
-                        (message) -> log.info("[MQ->] message received {}", message.toString()))
-                .handler("key2.event",
-                        (message) -> log.info("[MQ->] key2 message received {}", message.toString()))
-                .build();
-    }
-
     @RabbitMessageHandler(routingKey = "key1.event")
     public void handleKey1(Message message) {
         log.info("[MQ->] Key1 message received {}", message.toString());

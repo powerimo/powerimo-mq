@@ -2,7 +2,6 @@ package org.powerimo.mq.starter;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rabbitmq.client.Consumer;
 import org.poweimo.mq.config.RabbitConfig;
 import org.poweimo.mq.consumers.StandardConsumer;
 import org.poweimo.mq.converters.JsonConverter;
@@ -14,8 +13,8 @@ import org.poweimo.mq.listeners.RabbitListenerImpl;
 import org.poweimo.mq.publishers.DefaultRabbitPublisher;
 import org.poweimo.mq.publishers.RabbitPublisher;
 import org.poweimo.mq.routers.MessageRouter;
-import org.poweimo.mq.routers.RoutingKeyRouter;
 import org.powerimo.mq.routers.AnnotationRouter;
+import org.powerimo.mq.spring.RabbitMessageHandlerPostProcessor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
@@ -144,5 +143,10 @@ public class RabbitAutoConfiguration {
         var starter = new ListenerStarter(rabbitListener, rabbitMqProperties);
         starter.checkAutoStart();
         return starter;
+    }
+
+    @Bean
+    public RabbitMessageHandlerPostProcessor rabbitMessageHandlerPostProcessor(MessageRouter messageRouter) {
+        return new RabbitMessageHandlerPostProcessor(messageRouter);
     }
 }

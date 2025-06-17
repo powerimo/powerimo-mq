@@ -1,18 +1,15 @@
 package org.powerimo.mq.routers;
 
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.poweimo.mq.Message;
-import org.poweimo.mq.annotations.RabbitMessageHandler;
-import org.poweimo.mq.annotations.RabbitMessageListener;
 import org.poweimo.mq.enums.RouteResolution;
 import org.poweimo.mq.routers.BaseRouter;
+import org.powerimo.mq.spring.RabbitAnnotationProcessor;
 import org.springframework.context.ApplicationContext;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * <p>AnnotationRouter class.</p>
@@ -22,48 +19,11 @@ import java.util.Map;
  */
 @RequiredArgsConstructor
 @Slf4j
-public class AnnotationRouter extends BaseRouter {
+public class AnnotationRouter extends BaseRouter implements RabbitAnnotationProcessor {
     private final ApplicationContext context;
     private final HashMap<String, Object> messageListeners = new HashMap<>();
     private final HashMap<String, HandlerMethod> messageHandlers = new HashMap<>();
 
-    /**
-     * <p>init.</p>
-     */
-    @PostConstruct
-    public void init() {
-        Map<String, Object> beans = context.getBeansWithAnnotation(RabbitMessageListener.class);
-        for (Object bean : beans.values()) {
-            String queue = bean.getClass().getAnnotation(RabbitMessageListener.class).queue();
-            messageListeners.put(queue, bean);
-
-            log.info("✔️ Found MQ message listener: {} -> {}", queue, bean.getClass().getCanonicalName());
-        }
-
-        for (Object bean : beans.values()) {
-            Class<?> clazz = bean.getClass();
-            for (Method method : clazz.getDeclaredMethods()) {
-                if (method.isAnnotationPresent(RabbitMessageHandler.class)) {
-                    var annotation = method.getAnnotation(RabbitMessageHandler.class);
-                    method.setAccessible(true); // for private
-
-                    String routingKey = annotation.routingKey();
-                    if (!routingKey.isEmpty()) {
-                        messageHandlers.put(routingKey, new HandlerMethod(bean, method));
-                    }
-
-                    var routingKeys = annotation.routingKeys();
-                    for (String key : routingKeys) {
-                        messageHandlers.put(key, new HandlerMethod(bean, method));
-                    }
-
-                    log.info("🪝 Found MQ message handler: {} -> {}.{}", routingKey, clazz.getSimpleName(), method.getName());
-                }
-            }
-        }
-    }
-
-    /** {@inheritDoc} */
     @Override
     public RouteResolution route(Message message) {
         var routingKey = message.getRoutingKey();
@@ -117,6 +77,19 @@ public class AnnotationRouter extends BaseRouter {
         } catch (Exception ex) {
             throw new RuntimeException("Error handling " + method.getName(), ex);
         }
+    }
+
+    public void registerListener(String queue, Object bean) {
+        messageListeners.put(queue, bean);
+        log.info("✔️ Registered MQ message listener: {} -> {}", queue, bean.getClass().getCanonicalName());
+    }
+
+    public void registerHandler(String routingKey, HandlerMethod method) {
+        this.messageHandlers.put(routingKey, method);
+        log.info("🪝 Registered MQ message handler: {} -> {}.{}", routingKey,
+                method.bean.getClass().getSimpleName(),
+                method.method.getName()
+        );
     }
 
     /**

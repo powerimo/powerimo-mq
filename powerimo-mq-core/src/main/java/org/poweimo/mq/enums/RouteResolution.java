@@ -1,5 +1,11 @@
 package org.poweimo.mq.enums;
 
+/**
+ * <p>RouteResolution class.</p>
+ *
+ * @author andev
+ * @version $Id: $Id
+ */
 public enum RouteResolution {
 
     /**

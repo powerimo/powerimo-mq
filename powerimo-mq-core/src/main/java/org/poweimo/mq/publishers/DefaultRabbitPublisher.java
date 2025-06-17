@@ -26,6 +26,9 @@ import java.util.concurrent.TimeoutException;
  * Handles channel initialization, message conversion, and header management using organization-specific configuration and converters.
  * Supports publishing both Message objects and generic payloads with automatic encoding and metadata handling.
  * Throws MqPublisherException on connection, encoding, or publishing errors.
+ *
+ * @author andev
+ * @version $Id: $Id
  */
 @Slf4j
 public class DefaultRabbitPublisher implements RabbitPublisher {
@@ -34,11 +37,23 @@ public class DefaultRabbitPublisher implements RabbitPublisher {
     private Channel channel;
     private MessageConverter messageConverter;
 
+    /**
+     * <p>Constructor for DefaultRabbitPublisher.</p>
+     *
+     * @param config a {@link org.poweimo.mq.config.RabbitConfig} object
+     * @param connectionFactory a {@link com.rabbitmq.client.ConnectionFactory} object
+     * @param messageConverter a {@link org.poweimo.mq.converters.MessageConverter} object
+     */
     public DefaultRabbitPublisher(RabbitConfig config, ConnectionFactory connectionFactory, MessageConverter messageConverter) {
         this.connectionFactory = connectionFactory;
         this.rabbitConfig = config;
     }
 
+    /**
+     * <p>Constructor for DefaultRabbitPublisher.</p>
+     *
+     * @param config a {@link org.poweimo.mq.config.RabbitConfig} object
+     */
     public DefaultRabbitPublisher(RabbitConfig config) {
         this.rabbitConfig = config;
         this.messageConverter = config.getMessageConverter();
@@ -48,6 +63,9 @@ public class DefaultRabbitPublisher implements RabbitPublisher {
         }
     }
 
+    /**
+     * <p>initChannelIfNeeded.</p>
+     */
     protected void initChannelIfNeeded() {
         if (channel != null) {
             return;
@@ -65,10 +83,10 @@ public class DefaultRabbitPublisher implements RabbitPublisher {
     }
 
     /**
+     * {@inheritDoc}
+     *
      * Publishes the given Message to the configured RabbitMQ exchange using the specified routing key and message headers.
      * Initializes the channel if needed, sets protocol and class headers, and logs the sent message.
-     *
-     * @param message the Message object to be published
      */
     @Override
     public void publish(Message message) {
@@ -95,6 +113,7 @@ public class DefaultRabbitPublisher implements RabbitPublisher {
         log.debug("[->MQ] message sent: {}", message);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void publish(String routingKey, Object payload) {
         Message message;
@@ -118,6 +137,11 @@ public class DefaultRabbitPublisher implements RabbitPublisher {
         }
     }
 
+    /**
+     * <p>Getter for the field <code>connectionFactory</code>.</p>
+     *
+     * @return a {@link com.rabbitmq.client.ConnectionFactory} object
+     */
     protected ConnectionFactory getConnectionFactory() {
         if (connectionFactory != null) {
             return connectionFactory;

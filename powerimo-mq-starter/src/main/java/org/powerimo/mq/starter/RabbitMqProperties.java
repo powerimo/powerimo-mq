@@ -8,6 +8,12 @@ import org.poweimo.mq.converters.MessageConverter;
 import org.poweimo.mq.routers.MessageRouter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+/**
+ * <p>RabbitMqProperties class.</p>
+ *
+ * @author andev
+ * @version $Id: $Id
+ */
 @ConfigurationProperties(prefix = "rabbit")
 @Getter
 @Setter
@@ -27,6 +33,7 @@ public class RabbitMqProperties implements RabbitConfig {
     private Consumer consumer;
     private boolean autoStart = true;
 
+    /** {@inheritDoc} */
     @Override
     public boolean showConnectionsParameters() {
         return showBanner;

@@ -17,4 +17,10 @@ public class Message {
     private Object payload;
 
     private Envelope envelope;
+
+    public Class<?> getPayloadClass() {
+        if (payload == null)
+            return null;
+        return payload.getClass();
+    }
 }

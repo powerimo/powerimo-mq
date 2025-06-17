@@ -7,6 +7,8 @@ import org.poweimo.mq.Message;
 import java.io.IOException;
 
 public interface MessageConverter {
+
     Message encode(Object payload) throws IOException;
+
     Message decode(String consumerTag, Envelope envelope, AMQP.BasicProperties basicProperties, byte[] bytes) throws IOException, ClassNotFoundException;
 }

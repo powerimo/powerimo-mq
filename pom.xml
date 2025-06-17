@@ -12,6 +12,9 @@
         <module>powerimo-mq-core</module>
         <module>powerimo-mq-starter</module>
         <module>examples/consume-example</module>
+        <module>examples/routing-key-router-example</module>
+        <module>powerimo-mq-spring</module>
+        <module>examples/spring-boot-app</module>
     </modules>
 
     <properties>

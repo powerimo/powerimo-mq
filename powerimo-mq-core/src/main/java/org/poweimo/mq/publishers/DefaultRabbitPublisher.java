@@ -10,7 +10,10 @@ import org.poweimo.mq.MqConst;
 import org.poweimo.mq.config.RabbitConfig;
 import org.poweimo.mq.converters.JsonConverter;
 import org.poweimo.mq.converters.MessageConverter;
+import org.poweimo.mq.exceptions.InvalidMqConfigurationException;
 import org.poweimo.mq.exceptions.MqException;
+import org.poweimo.mq.exceptions.MqListenerException;
+import org.poweimo.mq.exceptions.MqPublisherException;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -33,23 +36,38 @@ public class DefaultRabbitPublisher implements RabbitPublisher {
     }
 
     public DefaultRabbitPublisher(RabbitConfig config) {
-        this.messageConverter = new JsonConverter();
         this.rabbitConfig = config;
+        this.messageConverter = config.getMessageConverter();
+
+        if (this.messageConverter == null) {
+            this.messageConverter = new JsonConverter();
+        }
     }
 
-    protected void initChannelIfNeeded() throws IOException, TimeoutException, URISyntaxException, NoSuchAlgorithmException, KeyManagementException, MqException {
+    protected void initChannelIfNeeded() {
         if (channel != null) {
             return;
         }
 
-        var url = AmqpUrlBuilder.buildUrl(rabbitConfig);
-        getConnectionFactory().setUri(url);
-        var cn = getConnectionFactory().newConnection();
-        channel = cn.createChannel();
+        try {
+            var url = AmqpUrlBuilder.buildUrl(rabbitConfig);
+            getConnectionFactory().setUri(url);
+            var cn = getConnectionFactory().newConnection();
+            channel = cn.createChannel();
+        } catch (IOException | TimeoutException | URISyntaxException | NoSuchAlgorithmException |
+                 KeyManagementException | InvalidMqConfigurationException e) {
+            throw new MqPublisherException("Exception on creating channel", e);
+        }
     }
 
+    /**
+     * Publishes the given Message to the configured RabbitMQ exchange using the specified routing key and message headers.
+     * Initializes the channel if needed, sets protocol and class headers, and logs the sent message.
+     *
+     * @param message the Message object to be published
+     */
     @Override
-    public void publish(Message message) throws IOException, URISyntaxException, NoSuchAlgorithmException, KeyManagementException, TimeoutException, MqException {
+    public void publish(Message message) {
         initChannelIfNeeded();
         Map<String, Object> headers = new LinkedHashMap<>();
         headers.put(MqConst.DATA_PROTOCOL_HEADER, message.getDataProtocolVersion());
@@ -57,20 +75,31 @@ public class DefaultRabbitPublisher implements RabbitPublisher {
 
         AMQP.BasicProperties props = new AMQP.BasicProperties.Builder()
                 .headers(headers)
+                .appId(this.rabbitConfig.getAppId())
                 .build();
 
-        channel.basicPublish(
-                rabbitConfig.getExchange(),
-                message.getRoutingKey(),
-                props,
-                message.getBody()
-        );
+        try {
+            channel.basicPublish(
+                    rabbitConfig.getExchange(),
+                    message.getRoutingKey(),
+                    props,
+                    message.getBody()
+            );
+        } catch (IOException ex) {
+            throw new MqPublisherException("Error publishing message", ex);
+        }
         log.debug("[->MQ] message sent: {}", message);
     }
 
     @Override
-    public void publish(String routingKey, Object payload) throws IOException, URISyntaxException, NoSuchAlgorithmException, KeyManagementException, TimeoutException, MqException {
-        var message = messageConverter.encode(payload);
+    public void publish(String routingKey, Object payload) {
+        Message message;
+        try {
+            message = messageConverter.encode(payload);
+        } catch (IOException ex) {
+            throw new MqPublisherException("Error encoding payload", ex);
+        }
+
         message.setRoutingKey(routingKey);
         message.setDataProtocolVersion(MqConst.DATA_PROTOCOL_VERSION_1_3);
 
@@ -78,7 +107,11 @@ public class DefaultRabbitPublisher implements RabbitPublisher {
             message.setDataClassName(payload.getClass().getCanonicalName());
         }
 
-        publish(message);
+        try {
+            publish(message);
+        } catch (Exception ex) {
+            throw new MqPublisherException("Error publishing message", ex);
+        }
     }
 
     private ConnectionFactory getConnectionFactory() {

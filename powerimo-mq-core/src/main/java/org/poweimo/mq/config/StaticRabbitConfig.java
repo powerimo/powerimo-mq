@@ -5,6 +5,11 @@ import lombok.*;
 import org.poweimo.mq.converters.MessageConverter;
 import org.poweimo.mq.routers.MessageRouter;
 
+/**
+ * Configuration class for RabbitMQ connection parameters, implementing the RabbitConfig interface.
+ * Provides static configuration for connection details, queue, exchange, message converter, router, and consumer.
+ * Includes builder, getter, setter, and string representation support via Lombok annotations.
+ */
 @Getter
 @Setter
 @NoArgsConstructor

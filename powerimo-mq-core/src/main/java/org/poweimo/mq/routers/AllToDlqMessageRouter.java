@@ -4,6 +4,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.poweimo.mq.Message;
 import org.poweimo.mq.enums.RouteResolution;
 
+/**
+ * MessageRouter implementation that routes all messages to the DLQ.
+ * Logs a warning each time a message is routed.
+ *
+ * @see MessageRouter
+ * @see RouteResolution#DLQ
+ */
 @Slf4j
 public class AllToDlqMessageRouter implements MessageRouter {
 

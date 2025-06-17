@@ -11,8 +11,6 @@ import org.poweimo.mq.config.RabbitConfig;
 import org.poweimo.mq.converters.JsonConverter;
 import org.poweimo.mq.converters.MessageConverter;
 import org.poweimo.mq.exceptions.InvalidMqConfigurationException;
-import org.poweimo.mq.exceptions.MqException;
-import org.poweimo.mq.exceptions.MqListenerException;
 import org.poweimo.mq.exceptions.MqPublisherException;
 
 import java.io.IOException;
@@ -23,6 +21,12 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
+/**
+ * Default implementation of the RabbitPublisher interface for publishing messages to RabbitMQ.
+ * Handles channel initialization, message conversion, and header management using organization-specific configuration and converters.
+ * Supports publishing both Message objects and generic payloads with automatic encoding and metadata handling.
+ * Throws MqPublisherException on connection, encoding, or publishing errors.
+ */
 @Slf4j
 public class DefaultRabbitPublisher implements RabbitPublisher {
     private ConnectionFactory connectionFactory;
@@ -114,7 +118,7 @@ public class DefaultRabbitPublisher implements RabbitPublisher {
         }
     }
 
-    private ConnectionFactory getConnectionFactory() {
+    protected ConnectionFactory getConnectionFactory() {
         if (connectionFactory != null) {
             return connectionFactory;
         }

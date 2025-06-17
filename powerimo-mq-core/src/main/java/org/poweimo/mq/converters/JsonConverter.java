@@ -15,6 +15,11 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
+/**
+ * MessageConverter implementation for serializing and deserializing messages using JSON.
+ * Utilizes an ObjectMapper for JSON processing, supporting protocol versioning and class metadata.
+ * Handles unknown properties gracefully and supports both typed and generic payloads.
+ */
 @Slf4j
 @Getter
 public class JsonConverter implements MessageConverter {
@@ -125,7 +130,6 @@ public class JsonConverter implements MessageConverter {
             message.setPayload(mapper.readValue(bodyAsString, new TypeReference<Map<String, Object>>() {
             }));
         }
-
 
         return message;
     }

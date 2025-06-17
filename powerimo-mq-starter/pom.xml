@@ -11,6 +11,7 @@
 
     <artifactId>powerimo-mq-starter</artifactId>
     <packaging>jar</packaging>
+    <name>Powerimo MQ - Spring Starter</name>
     <description>Powerimo MQ Spring Boot starter</description>
     <url>https://github.com/powerimo/powerimo-mq</url>
 

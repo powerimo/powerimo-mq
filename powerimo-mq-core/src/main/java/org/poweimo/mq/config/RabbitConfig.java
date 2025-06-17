@@ -5,6 +5,7 @@ import org.poweimo.mq.converters.MessageConverter;
 import org.poweimo.mq.routers.MessageRouter;
 
 public interface RabbitConfig {
+    String getAppId();
     String getUrl();
     String getUsername();
     String getPassword();

@@ -36,8 +36,12 @@ public class DefaultRabbitPublisher implements RabbitPublisher {
     }
 
     public DefaultRabbitPublisher(RabbitConfig config) {
-        this.messageConverter = new JsonConverter();
         this.rabbitConfig = config;
+        this.messageConverter = config.getMessageConverter();
+
+        if (this.messageConverter == null) {
+            this.messageConverter = new JsonConverter();
+        }
     }
 
     protected void initChannelIfNeeded() {
@@ -61,12 +65,6 @@ public class DefaultRabbitPublisher implements RabbitPublisher {
      * Initializes the channel if needed, sets protocol and class headers, and logs the sent message.
      *
      * @param message the Message object to be published
-     * @throws IOException              if an I/O error occurs
-     * @throws URISyntaxException       if the RabbitMQ URI is invalid
-     * @throws NoSuchAlgorithmException if a security algorithm is not available
-     * @throws KeyManagementException   if there is a key management error
-     * @throws TimeoutException         if a timeout occurs during connection
-     * @throws MqException              if a custom MQ error occurs
      */
     @Override
     public void publish(Message message) {
@@ -77,6 +75,7 @@ public class DefaultRabbitPublisher implements RabbitPublisher {
 
         AMQP.BasicProperties props = new AMQP.BasicProperties.Builder()
                 .headers(headers)
+                .appId(this.rabbitConfig.getAppId())
                 .build();
 
         try {

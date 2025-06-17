@@ -49,6 +49,7 @@ public class RoutingKeyRouter implements MessageRouter {
             return unknownMessageHandler.route(message);
         }
         else {
+            log.warn("[MQ->] Unsupported routing key: {}. Message will be rejected.", message.getRoutingKey());
             return RouteResolution.DLQ;
         }
     }

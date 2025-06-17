@@ -9,6 +9,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.poweimo.mq.AmqpUrlBuilder;
 import org.poweimo.mq.config.RabbitConfig;
+import org.poweimo.mq.config.StaticRabbitConfig;
 import org.poweimo.mq.consumers.ChannelSupport;
 import org.poweimo.mq.consumers.StandardConsumer;
 import org.poweimo.mq.converters.JsonConverter;
@@ -145,8 +146,13 @@ public class RabbitListenerImpl implements RabbitListener {
                 messageConverter = new JsonConverter();
             }
 
+            var consumerConfig = StaticRabbitConfig.builder()
+                    .messageRouter(router)
+                    .messageConverter(messageConverter)
+                    .build();
+
             log.warn("Consumer is missing. Default consumer will be used.");
-            StandardConsumer standardConsumer = new StandardConsumer(router, messageConverter);
+            StandardConsumer standardConsumer = new StandardConsumer(consumerConfig);
             standardConsumer.setChannel(channel);
             consumer = standardConsumer;
         }
@@ -177,6 +183,8 @@ public class RabbitListenerImpl implements RabbitListener {
         }
 
         log.info(Utils.formatLogValue("RabbitMQ queue", rabbitConfiguration.getQueue()));
+        log.info(Utils.formatLogValue("RabbitMQ client App ID", rabbitConfiguration.getAppId()));
+        log.info(Utils.formatLogValue("RabbitMQ exchange", rabbitConfiguration.getExchange()));
     }
 
     protected ConnectionFactory getConnectionFactory() {

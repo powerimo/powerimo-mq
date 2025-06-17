@@ -3,25 +3,26 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.powerimo</groupId>
+        <artifactId>powerimo-mq</artifactId>
+        <version>${revision}</version>
+    </parent>
 
-    <groupId>org.powerimo</groupId>
-    <artifactId>powerimo-mq</artifactId>
-    <version>${revision}</version>
-    <packaging>pom</packaging>
-    <modules>
-        <module>powerimo-mq-core</module>
-        <module>powerimo-mq-starter</module>
-        <module>examples/consume-example</module>
-        <module>examples/routing-key-router-example</module>
-        <module>powerimo-mq-spring</module>
-        <module>examples/spring-boot-app</module>
-    </modules>
+    <artifactId>powerimo-mq-spring</artifactId>
 
     <properties>
-        <revision>1.0-SNAPSHOT</revision>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>6.2.7</version>
+        </dependency>
+    </dependencies>
 
 </project>

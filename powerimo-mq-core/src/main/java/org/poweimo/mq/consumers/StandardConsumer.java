@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.poweimo.mq.Message;
+import org.poweimo.mq.config.RabbitConfig;
 import org.poweimo.mq.converters.MessageConverter;
 import org.poweimo.mq.enums.RouteResolution;
 import org.poweimo.mq.routers.MessageRouter;
@@ -19,9 +20,9 @@ public class StandardConsumer implements Consumer, ChannelSupport {
     private final MessageRouter _router;
     private final MessageConverter _messageConverter;
 
-    public StandardConsumer(MessageRouter messageRouter, MessageConverter messageConverter) {
-        _router = messageRouter;
-        _messageConverter = messageConverter;
+    public StandardConsumer(RabbitConfig config) {
+        _router = config.getMessageRouter();
+        _messageConverter = config.getMessageConverter();
     }
 
     @Override

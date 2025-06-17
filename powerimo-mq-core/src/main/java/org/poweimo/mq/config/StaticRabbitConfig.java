@@ -24,6 +24,7 @@ public class StaticRabbitConfig implements RabbitConfig {
     private MessageConverter messageConverter;
     private MessageRouter messageRouter;
     private Consumer consumer;
+    private String appId;
 
     @Override
     public String getUrl() {

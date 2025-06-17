@@ -85,7 +85,10 @@ public class JsonConverter implements MessageConverter {
                 .envelope(envelope)
                 .build();
 
-        var bodyAsString = new String(bytes, StandardCharsets.UTF_8);
+        String bodyAsString = null;
+        if (bytes != null) {
+            bodyAsString = new String(bytes, StandardCharsets.UTF_8);
+        }
 
         Object headerClassName = basicProperties.getHeaders() != null
                 ? basicProperties.getHeaders().get(MqConst.DATA_CLASS_HEADER)
@@ -115,11 +118,14 @@ public class JsonConverter implements MessageConverter {
             }
 
             message.setPayload(payload);
+        } else if (bodyAsString == null || bodyAsString.isEmpty()) {
+            message.setPayload(null);
         } else {
             // there is no data-class header. Read as Map<String, Object>
             message.setPayload(mapper.readValue(bodyAsString, new TypeReference<Map<String, Object>>() {
             }));
         }
+
 
         return message;
     }

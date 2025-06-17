@@ -15,6 +15,7 @@ import org.poweimo.mq.publishers.DefaultRabbitPublisher;
 import org.poweimo.mq.publishers.RabbitPublisher;
 import org.poweimo.mq.routers.MessageRouter;
 import org.poweimo.mq.routers.RoutingKeyRouter;
+import org.powerimo.mq.routers.AnnotationRouter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
@@ -45,8 +46,8 @@ public class RabbitAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public MessageRouter rabbitMessageRouter() {
-        return new RoutingKeyRouter();
+    public MessageRouter rabbitMessageRouter(ApplicationContext applicationContext) {
+        return new AnnotationRouter(applicationContext);
     }
 
     @Bean

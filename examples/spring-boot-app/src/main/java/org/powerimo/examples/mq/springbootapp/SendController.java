@@ -26,4 +26,18 @@ public class SendController {
         return ResponseEntity.ok().body("Sent");
     }
 
+    @GetMapping("all")
+    public ResponseEntity<?> sendAll() {
+        rabbitPublisher.publish("key1.event", null);
+        rabbitPublisher.publish("key2.event", null);
+        rabbitPublisher.publish("key3.event", null);
+
+        var data = new SomeData();
+        data.setStringAttr("test-string");
+        data.setIntAttr(123);
+        rabbitPublisher.publish("key4.event", data);
+        rabbitPublisher.publish("key5.event", data);
+        return ResponseEntity.ok().body("Sent");
+    }
+
 }

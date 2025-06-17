@@ -12,16 +12,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-public class RoutingKeyRouter implements MessageRouter {
+public class RoutingKeyRouter extends BaseRouter {
     private final Map<String, MessageHandler> routingKeyHandlers = new HashMap<>();
-
-    @Getter
-    @Setter
-    private MessageRouter unknownMessageHandler;
-
-    @Getter
-    @Setter
-    private ExceptionHandler exceptionHandler;
 
     @Override
     public RouteResolution route(Message message) {
@@ -42,25 +34,6 @@ public class RoutingKeyRouter implements MessageRouter {
 
     public void registerRoutingKeyHandler(String key, MessageHandler handler) {
         routingKeyHandlers.put(key, handler);
-    }
-
-    public RouteResolution handleUnknown(Message message) {
-        if (unknownMessageHandler != null) {
-            return unknownMessageHandler.route(message);
-        }
-        else {
-            log.warn("[MQ->] Unsupported routing key: {}. Message will be rejected.", message.getRoutingKey());
-            return RouteResolution.DLQ;
-        }
-    }
-
-    public RouteResolution handleException(Message message, Exception ex) {
-        if (exceptionHandler != null) {
-            return exceptionHandler.handleException(message, ex);
-        } else {
-            log.error("Exception on handling message: {}", message, ex);
-            return RouteResolution.DLQ;
-        }
     }
 
     public static Builder builder() {

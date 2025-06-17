@@ -18,8 +18,8 @@ import org.poweimo.mq.enums.ListenerStatus;
 import org.poweimo.mq.exceptions.InvalidMqConfigurationException;
 import org.poweimo.mq.exceptions.MqException;
 import org.poweimo.mq.exceptions.MqListenerException;
+import org.poweimo.mq.routers.AllToDlqMessageRouter;
 import org.poweimo.mq.routers.MessageRouter;
-import org.poweimo.mq.routers.StandardMessageRouter;
 import org.powerimo.common.utils.Utils;
 
 import java.io.IOException;
@@ -138,7 +138,7 @@ public class RabbitListenerImpl implements RabbitListener {
         if (consumer == null) {
             MessageRouter router = rabbitConfiguration.getMessageRouter();
             if (router == null) {
-                router = new StandardMessageRouter();
+                router = new AllToDlqMessageRouter();
             }
 
             MessageConverter messageConverter = rabbitConfiguration.getMessageConverter();

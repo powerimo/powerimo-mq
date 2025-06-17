@@ -23,6 +23,11 @@
             <artifactId>powerimo-mq-core</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.powerimo</groupId>
+            <artifactId>powerimo-mq-spring</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.projectlombok</groupId>

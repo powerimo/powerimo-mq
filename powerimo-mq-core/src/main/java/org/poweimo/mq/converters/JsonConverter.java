@@ -15,6 +15,14 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
+/**
+ * MessageConverter implementation for serializing and deserializing messages using JSON.
+ * Utilizes an ObjectMapper for JSON processing, supporting protocol versioning and class metadata.
+ * Handles unknown properties gracefully and supports both typed and generic payloads.
+ *
+ * @author andev
+ * @version $Id: $Id
+ */
 @Slf4j
 @Getter
 public class JsonConverter implements MessageConverter {
@@ -34,17 +42,20 @@ public class JsonConverter implements MessageConverter {
         log.warn("ObjectMapper is missing. Default ObjectMapper was created.");
     }
 
+    /**
+     * <p>Constructor for JsonConverter.</p>
+     *
+     * @param mapper a {@link com.fasterxml.jackson.databind.ObjectMapper} object
+     */
     public JsonConverter(ObjectMapper mapper) {
         this.mapper = mapper;
     }
 
     /**
+     * {@inheritDoc}
+     *
      * Serializes the given payload object to JSON and constructs a Message with protocol version and class metadata.
      * If the payload is null, returns a Message with only the protocol version set.
-     *
-     * @param payload the object to encode as the message body
-     * @return a Message containing the serialized payload and metadata
-     * @throws IOException if serialization fails
      */
     @Override
     public Message encode(Object payload) throws IOException {
@@ -64,16 +75,10 @@ public class JsonConverter implements MessageConverter {
     }
 
     /**
-     * Deserializes the given byte array into a Message object using metadata from the provided envelope and AMQP properties.
-     * Determines the payload type from the data-class header if present, otherwise deserializes as Map<String, Object>.
+     * {@inheritDoc}
      *
-     * @param s               unused string parameter
-     * @param envelope        the RabbitMQ envelope containing routing information
-     * @param basicProperties AMQP message properties, used to extract headers
-     * @param bytes           the message body as a byte array
-     * @return a Message object with deserialized payload and metadata
-     * @throws IOException            if deserialization fails
-     * @throws ClassNotFoundException if the specified data class cannot be found
+     * Deserializes the given byte array into a Message object using metadata from the provided envelope and AMQP properties.
+     * Determines the payload type from the data-class header if present, otherwise deserializes as Map.
      */
     @Override
     public Message decode(String s, Envelope envelope, AMQP.BasicProperties basicProperties, byte[] bytes)
@@ -125,7 +130,6 @@ public class JsonConverter implements MessageConverter {
             message.setPayload(mapper.readValue(bodyAsString, new TypeReference<Map<String, Object>>() {
             }));
         }
-
 
         return message;
     }

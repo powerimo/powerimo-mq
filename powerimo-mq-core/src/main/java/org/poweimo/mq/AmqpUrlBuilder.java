@@ -2,10 +2,22 @@ package org.poweimo.mq;
 
 import org.poweimo.mq.config.RabbitConfig;
 import org.poweimo.mq.exceptions.InvalidMqConfigurationException;
-import org.poweimo.mq.exceptions.MqException;
 
+/**
+ * <p>AmqpUrlBuilder class.</p>
+ *
+ * @author andev
+ * @version $Id: $Id
+ */
 public class AmqpUrlBuilder {
 
+    /**
+     * <p>buildUrl.</p>
+     *
+     * @param config a {@link org.poweimo.mq.config.RabbitConfig} object
+     * @return a {@link java.lang.String} object
+     * @throws org.poweimo.mq.exceptions.InvalidMqConfigurationException if any.
+     */
     public static String buildUrl(RabbitConfig config) throws InvalidMqConfigurationException {
         if (config.getUrl() != null)
             return config.getUrl();

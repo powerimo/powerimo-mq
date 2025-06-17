@@ -12,6 +12,12 @@ import org.poweimo.mq.routers.MessageRouter;
 
 import java.io.IOException;
 
+/**
+ * <p>StandardConsumer class.</p>
+ *
+ * @author andev
+ * @version $Id: $Id
+ */
 @Slf4j
 @Getter
 public class StandardConsumer implements Consumer, ChannelSupport {
@@ -20,11 +26,17 @@ public class StandardConsumer implements Consumer, ChannelSupport {
     private final MessageRouter _router;
     private final MessageConverter _messageConverter;
 
+    /**
+     * <p>Constructor for StandardConsumer.</p>
+     *
+     * @param config a {@link org.poweimo.mq.config.RabbitConfig} object
+     */
     public StandardConsumer(RabbitConfig config) {
         _router = config.getMessageRouter();
         _messageConverter = config.getMessageConverter();
     }
 
+    /** {@inheritDoc} */
     @Override
     public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties basicProperties, byte[] bytes) throws IOException {
         Message message;
@@ -55,26 +67,31 @@ public class StandardConsumer implements Consumer, ChannelSupport {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public void handleConsumeOk(String s) {
 
     }
 
+    /** {@inheritDoc} */
     @Override
     public void handleCancelOk(String s) {
 
     }
 
+    /** {@inheritDoc} */
     @Override
     public void handleCancel(String s) throws IOException {
 
     }
 
+    /** {@inheritDoc} */
     @Override
     public void handleShutdownSignal(String s, ShutdownSignalException e) {
 
     }
 
+    /** {@inheritDoc} */
     @Override
     public void handleRecoverOk(String s) {
 

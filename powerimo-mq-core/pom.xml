@@ -11,6 +11,7 @@
 
     <artifactId>powerimo-mq-core</artifactId>
     <packaging>jar</packaging>
+    <name>Powerimo MQ - Core</name>
     <description>Powerimo MQ core components</description>
     <url>https://github.com/powerimo/powerimo-mq</url>
 

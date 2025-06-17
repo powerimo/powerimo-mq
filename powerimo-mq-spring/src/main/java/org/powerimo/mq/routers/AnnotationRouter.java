@@ -14,6 +14,12 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * <p>AnnotationRouter class.</p>
+ *
+ * @author andev
+ * @version $Id: $Id
+ */
 @RequiredArgsConstructor
 @Slf4j
 public class AnnotationRouter extends BaseRouter {
@@ -21,6 +27,9 @@ public class AnnotationRouter extends BaseRouter {
     private final HashMap<String, Object> messageListeners = new HashMap<>();
     private final HashMap<String, HandlerMethod> messageHandlers = new HashMap<>();
 
+    /**
+     * <p>init.</p>
+     */
     @PostConstruct
     public void init() {
         Map<String, Object> beans = context.getBeansWithAnnotation(RabbitMessageListener.class);
@@ -54,6 +63,7 @@ public class AnnotationRouter extends BaseRouter {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public RouteResolution route(Message message) {
         var routingKey = message.getRoutingKey();
@@ -71,10 +81,22 @@ public class AnnotationRouter extends BaseRouter {
         return RouteResolution.ACKNOWLEDGE;
     }
 
+    /**
+     * <p>findHandlerMethod.</p>
+     *
+     * @param routingKey a {@link java.lang.String} object
+     * @return a {@link org.powerimo.mq.routers.AnnotationRouter.HandlerMethod} object
+     */
     public HandlerMethod findHandlerMethod(String routingKey) {
         return messageHandlers.get(routingKey);
     }
 
+    /**
+     * <p>handle.</p>
+     *
+     * @param handler a {@link org.powerimo.mq.routers.AnnotationRouter.HandlerMethod} object
+     * @param message a {@link org.poweimo.mq.Message} object
+     */
     public void handle(HandlerMethod handler, Message message) {
         Method method = handler.method;
         Class<?>[] paramTypes = method.getParameterTypes();
@@ -97,5 +119,11 @@ public class AnnotationRouter extends BaseRouter {
         }
     }
 
+    /**
+     * <p>Link to bean method</p>
+     *
+     * @param bean a {@link java.lang.Object} object
+     * @param method a {@link java.lang.reflect.Method} object
+     */
     public record HandlerMethod(Object bean, Method method) {}
 }

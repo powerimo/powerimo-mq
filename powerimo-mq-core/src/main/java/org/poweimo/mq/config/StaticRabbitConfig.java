@@ -5,6 +5,14 @@ import lombok.*;
 import org.poweimo.mq.converters.MessageConverter;
 import org.poweimo.mq.routers.MessageRouter;
 
+/**
+ * Configuration class for RabbitMQ connection parameters, implementing the RabbitConfig interface.
+ * Provides static configuration for connection details, queue, exchange, message converter, router, and consumer.
+ * Includes builder, getter, setter, and string representation support via Lombok annotations.
+ *
+ * @author andev
+ * @version $Id: $Id
+ */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -26,41 +34,49 @@ public class StaticRabbitConfig implements RabbitConfig {
     private Consumer consumer;
     private String appId;
 
+    /** {@inheritDoc} */
     @Override
     public String getUrl() {
         return url;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getUsername() {
         return username;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getPassword() {
         return password;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean showConnectionsParameters() {
         return showConnectionParametersFlag;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getQueue() {
         return queue;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getHost() {
         return host;
     }
 
+    /** {@inheritDoc} */
     @Override
     public long getPort() {
         return port;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getVirtualHost() {
         return virtualHost;

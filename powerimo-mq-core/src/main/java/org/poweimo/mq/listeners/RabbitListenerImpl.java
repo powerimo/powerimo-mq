@@ -16,15 +16,20 @@ import org.poweimo.mq.converters.JsonConverter;
 import org.poweimo.mq.converters.MessageConverter;
 import org.poweimo.mq.enums.ListenerStatus;
 import org.poweimo.mq.exceptions.InvalidMqConfigurationException;
-import org.poweimo.mq.exceptions.MqException;
 import org.poweimo.mq.exceptions.MqListenerException;
 import org.poweimo.mq.routers.AllToDlqMessageRouter;
 import org.poweimo.mq.routers.MessageRouter;
 import org.powerimo.common.utils.Utils;
 
-import java.io.IOException;
-import java.util.concurrent.TimeoutException;
-
+/**
+ * Implementation of RabbitListener for managing RabbitMQ message consumption.
+ * Handles connection setup, channel creation, consumer initialization, and listener lifecycle (start/stop).
+ * Supports configurable RabbitConfig, Consumer, MessageRouter, and MessageConverter.
+ * Provides status tracking and logs connection details when enabled.
+ *
+ * @author andev
+ * @version $Id: $Id
+ */
 @Slf4j
 public class RabbitListenerImpl implements RabbitListener {
     private ListenerStatus status;
@@ -42,20 +47,30 @@ public class RabbitListenerImpl implements RabbitListener {
     @Setter
     private Consumer consumer;
 
+    /**
+     * <p>Constructor for RabbitListenerImpl.</p>
+     *
+     * @param rabbitConfiguration a {@link org.poweimo.mq.config.RabbitConfig} object
+     */
     public RabbitListenerImpl(RabbitConfig rabbitConfiguration) {
         this.rabbitConfiguration = rabbitConfiguration;
     }
 
+    /**
+     * <p>Constructor for RabbitListenerImpl.</p>
+     *
+     * @param rabbitConfiguration a {@link org.poweimo.mq.config.RabbitConfig} object
+     * @param connectionFactory a {@link com.rabbitmq.client.ConnectionFactory} object
+     */
     public RabbitListenerImpl(RabbitConfig rabbitConfiguration, ConnectionFactory connectionFactory) {
         this.rabbitConfiguration = rabbitConfiguration;
     }
 
     /**
-     * Starts the RabbitListener by establishing a connection to RabbitMQ, creating a channel,
-     * and beginning message consumption on the configured queue. If the listener is already running,
-     * the method returns immediately. Throws MqException if the queue is not specified or if startup fails.
+     * {@inheritDoc}
      *
-     * @throws MqException if the queue is not specified or if an error occurs during startup.
+     * Starts the RabbitListener by establishing a connection to RabbitMQ, creating a channel,
+     * and beginning message consumption on the configured queue. If already running, does nothing.
      */
     @Override
     public void start() throws InvalidMqConfigurationException, MqListenerException {
@@ -89,11 +104,10 @@ public class RabbitListenerImpl implements RabbitListener {
     }
 
     /**
+     * {@inheritDoc}
+     *
      * Stops the RabbitListener by closing the underlying channel and updating the listener status to STOPPED.
      * If the listener is already stopped, the method returns immediately.
-     *
-     * @throws IOException      if an I/O error occurs while closing the channel.
-     * @throws TimeoutException if a timeout occurs during channel closure.
      */
     @Override
     public void stop() throws MqListenerException {
@@ -110,10 +124,9 @@ public class RabbitListenerImpl implements RabbitListener {
     }
 
     /**
-     * Returns the current status of the listener.
+     * {@inheritDoc}
      *
-     * @return the ListenerStatus indicating whether the listener is RUNNING or STOPPED,
-     * or null if the status is not set.
+     * Returns the current status of the listener.
      */
     @Override
     public ListenerStatus getStatus() {
@@ -165,6 +178,9 @@ public class RabbitListenerImpl implements RabbitListener {
         return consumer;
     }
 
+    /**
+     * <p>logConnectionInfo.</p>
+     */
     protected void logConnectionInfo() {
         if (!rabbitConfiguration.showConnectionsParameters())
             return;
@@ -187,6 +203,11 @@ public class RabbitListenerImpl implements RabbitListener {
         log.info(Utils.formatLogValue("RabbitMQ exchange", rabbitConfiguration.getExchange()));
     }
 
+    /**
+     * <p>Getter for the field <code>connectionFactory</code>.</p>
+     *
+     * @return a {@link com.rabbitmq.client.ConnectionFactory} object
+     */
     protected ConnectionFactory getConnectionFactory() {
         if (connectionFactory == null) {
             connectionFactory = new ConnectionFactory();

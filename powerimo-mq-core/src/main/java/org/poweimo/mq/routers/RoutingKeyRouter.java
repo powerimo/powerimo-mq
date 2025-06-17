@@ -11,10 +11,17 @@ import org.poweimo.mq.handlers.MessageHandler;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * <p>RoutingKeyRouter class.</p>
+ *
+ * @author andev
+ * @version $Id: $Id
+ */
 @Slf4j
 public class RoutingKeyRouter extends BaseRouter {
     private final Map<String, MessageHandler> routingKeyHandlers = new HashMap<>();
 
+    /** {@inheritDoc} */
     @Override
     public RouteResolution route(Message message) {
         var routingKey = message.getRoutingKey();
@@ -32,10 +39,21 @@ public class RoutingKeyRouter extends BaseRouter {
         return RouteResolution.ACKNOWLEDGE;
     }
 
+    /**
+     * <p>registerRoutingKeyHandler.</p>
+     *
+     * @param key a {@link java.lang.String} object
+     * @param handler a {@link org.poweimo.mq.handlers.MessageHandler} object
+     */
     public void registerRoutingKeyHandler(String key, MessageHandler handler) {
         routingKeyHandlers.put(key, handler);
     }
 
+    /**
+     * <p>builder.</p>
+     *
+     * @return a {@link org.poweimo.mq.routers.RoutingKeyRouter.Builder} object
+     */
     public static Builder builder() {
         return new Builder();
     }

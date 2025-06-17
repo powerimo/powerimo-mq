@@ -11,6 +11,7 @@
 
     <artifactId>powerimo-mq-spring</artifactId>
     <packaging>jar</packaging>
+    <name>Powerimo MQ - Spring</name>
     <description>Powerimo MQ Spring components</description>
     <url>https://github.com/powerimo/powerimo-mq</url>
 

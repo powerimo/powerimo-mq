@@ -8,6 +8,7 @@
     <artifactId>powerimo-mq</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
+    <name>Powerimo MQ - Parent</name>
     <description>Powerimo MQ parent POM</description>
     <url>https://github.com/powerimo/powerimo-mq</url>
 

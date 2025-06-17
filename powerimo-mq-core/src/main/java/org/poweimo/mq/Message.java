@@ -3,6 +3,12 @@ package org.poweimo.mq;
 import com.rabbitmq.client.Envelope;
 import lombok.*;
 
+/**
+ * <p>Message class.</p>
+ *
+ * @author andev
+ * @version $Id: $Id
+ */
 @Getter
 @Setter
 @ToString
@@ -18,6 +24,11 @@ public class Message {
 
     private Envelope envelope;
 
+    /**
+     * <p>getPayloadClass.</p>
+     *
+     * @return a {@link java.lang.Class} object
+     */
     public Class<?> getPayloadClass() {
         if (payload == null)
             return null;

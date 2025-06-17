@@ -10,6 +10,9 @@
     </parent>
 
     <artifactId>powerimo-mq-spring</artifactId>
+    <packaging>jar</packaging>
+    <description>Powerimo MQ Spring components</description>
+    <url>https://github.com/powerimo/powerimo-mq</url>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -36,5 +39,28 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://mit-license.org/</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>andewil</id>
+            <name>Oleg Voronin</name>
+            <email>app@andewil.com</email>
+            <url>https://github.com/andewil</url>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:https://github.com/powerimo/powerimo-mq.git</connection>
+        <developerConnection>https://github.com/powerimo/powerimo-mq</developerConnection>
+        <url>https://powerimo.org</url>
+    </scm>
+
 
 </project>

@@ -1,0 +1,49 @@
+name: Pull Request Check
+
+on:
+  pull_request:
+    branches:
+      - "main"
+      - "release/**"
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: maven-${{ runner.os }}-global
+          restore-keys: |
+            maven-${{ runner.os }}-
+            maven-
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+          server-id: ossrh
+          server-username: ${{ secrets.OSSRH_USERNAME }}
+          server-password: ${{ secrets.OSSRH_PASSWORD }}
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: ${{ secrets.GPG_KEY_PASSPHRASE }}
+          overwrite-settings: true
+
+      - name: Compile code
+        run: mvn -B clean compile
+
+      - name: Run tests
+        run: mvn -B test

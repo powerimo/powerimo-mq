@@ -1,5 +1,9 @@
 package org.poweimo.mq.config;
 
+import com.rabbitmq.client.Consumer;
+import org.poweimo.mq.converters.MessageConverter;
+import org.poweimo.mq.routers.MessageRouter;
+
 public interface RabbitConfig {
     String getUrl();
     String getUsername();
@@ -10,4 +14,7 @@ public interface RabbitConfig {
     long getPort();
     String getVirtualHost();
     String getExchange();
+    MessageConverter getMessageConverter();
+    MessageRouter getMessageRouter();
+    Consumer getConsumer();
 }

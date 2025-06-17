@@ -1,6 +1,9 @@
 package org.poweimo.mq.config;
 
+import com.rabbitmq.client.Consumer;
 import lombok.*;
+import org.poweimo.mq.converters.MessageConverter;
+import org.poweimo.mq.routers.MessageRouter;
 
 @Getter
 @Setter
@@ -18,6 +21,9 @@ public class StaticRabbitConfig implements RabbitConfig {
     private String exchange;
     private String queue;
     private boolean showConnectionParametersFlag = true;
+    private MessageConverter messageConverter;
+    private MessageRouter messageRouter;
+    private Consumer consumer;
 
     @Override
     public String getUrl() {
@@ -58,4 +64,5 @@ public class StaticRabbitConfig implements RabbitConfig {
     public String getVirtualHost() {
         return virtualHost;
     }
+
 }

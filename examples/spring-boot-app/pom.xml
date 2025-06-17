@@ -21,7 +21,7 @@
         <dependency>
             <groupId>org.powerimo</groupId>
             <artifactId>powerimo-mq-starter</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

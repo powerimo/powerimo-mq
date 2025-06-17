@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>powerimo-mq-core</artifactId>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
     <description>Powerimo MQ core components</description>
     <url>https://github.com/powerimo/powerimo-mq</url>
 

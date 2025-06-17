@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>powerimo-mq-spring</artifactId>
+    <packaging>jar</packaging>
     <description>Powerimo MQ Spring components</description>
     <url>https://github.com/powerimo/powerimo-mq</url>
 

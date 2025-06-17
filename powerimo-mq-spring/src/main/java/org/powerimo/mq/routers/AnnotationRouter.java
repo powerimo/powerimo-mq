@@ -120,11 +120,10 @@ public class AnnotationRouter extends BaseRouter {
     }
 
     /**
-     * <p>HandlerMethod.</p>
+     * <p>Link to bean method</p>
      *
      * @param bean a {@link java.lang.Object} object
      * @param method a {@link java.lang.reflect.Method} object
-     * @return a record object
      */
     public record HandlerMethod(Object bean, Method method) {}
 }

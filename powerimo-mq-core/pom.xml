@@ -10,6 +10,9 @@
     </parent>
 
     <artifactId>powerimo-mq-core</artifactId>
+    <packaging>pom</packaging>
+    <description>Powerimo MQ core components</description>
+    <url>https://github.com/powerimo/powerimo-mq</url>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -33,7 +36,6 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.36</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>

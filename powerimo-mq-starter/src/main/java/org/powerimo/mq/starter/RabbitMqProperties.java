@@ -32,6 +32,7 @@ public class RabbitMqProperties implements RabbitConfig {
     private MessageRouter messageRouter;
     private Consumer consumer;
     private boolean autoStart = true;
+    private boolean confirmPublish = true;
 
     /** {@inheritDoc} */
     @Override
@@ -39,4 +40,8 @@ public class RabbitMqProperties implements RabbitConfig {
         return showBanner;
     }
 
+    @Override
+    public boolean getConfirmPublish() {
+        return confirmPublish;
+    }
 }

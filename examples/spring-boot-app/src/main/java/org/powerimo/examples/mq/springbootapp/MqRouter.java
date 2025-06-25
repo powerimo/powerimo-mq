@@ -2,10 +2,9 @@ package org.powerimo.examples.mq.springbootapp;
 
 import lombok.extern.slf4j.Slf4j;
 import org.poweimo.mq.Message;
+import org.poweimo.mq.annotations.RabbitDefaultHandler;
 import org.poweimo.mq.annotations.RabbitMessageHandler;
 import org.poweimo.mq.annotations.RabbitMessageListener;
-import org.poweimo.mq.routers.MessageRouter;
-import org.poweimo.mq.routers.RoutingKeyRouter;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -32,4 +31,10 @@ public class MqRouter {
     public void handleKey4(SomeData data) {
         log.info("[MQ->] Key4 message received {}", data.toString());
     }
+
+    //@RabbitDefaultHandler
+    public void defaultHandler(Message message) {
+        log.info("[MQ->] Default handler for message: {}", message.toString());
+    }
+
 }

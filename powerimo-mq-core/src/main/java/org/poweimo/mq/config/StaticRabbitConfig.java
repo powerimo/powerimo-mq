@@ -33,6 +33,7 @@ public class StaticRabbitConfig implements RabbitConfig {
     private MessageRouter messageRouter;
     private Consumer consumer;
     private String appId;
+    private boolean confirmPublish = true;
 
     /** {@inheritDoc} */
     @Override
@@ -82,4 +83,8 @@ public class StaticRabbitConfig implements RabbitConfig {
         return virtualHost;
     }
 
+    @Override
+    public boolean getConfirmPublish() {
+        return confirmPublish;
+    }
 }

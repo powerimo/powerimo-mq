@@ -76,6 +76,12 @@ public class DefaultRabbitPublisher implements RabbitPublisher {
             getConnectionFactory().setUri(url);
             var cn = getConnectionFactory().newConnection();
             channel = cn.createChannel();
+            if (this.rabbitConfig.getConfirmPublish()) {
+                channel.confirmSelect();
+                log.info("Channel confirm publishing is enabled");
+            } else {
+                log.info("Channel confirm publishing is disabled");
+            }
         } catch (IOException | TimeoutException | URISyntaxException | NoSuchAlgorithmException |
                  KeyManagementException | InvalidMqConfigurationException e) {
             throw new MqPublisherException("Exception on creating channel", e);

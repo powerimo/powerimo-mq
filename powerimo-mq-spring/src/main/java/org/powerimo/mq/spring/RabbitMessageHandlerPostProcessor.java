@@ -41,22 +41,6 @@ public class RabbitMessageHandlerPostProcessor implements BeanPostProcessor {
             }
         }
 
-        for (Method method : clazz.getDeclaredMethods()) {
-            if (method.isAnnotationPresent(RabbitMessageHandler.class)) {
-                RabbitMessageHandler handler = method.getAnnotation(RabbitMessageHandler.class);
-                method.setAccessible(true);
-
-                if (handler.routingKey() != null) {
-                    annotationProcessor.registerHandler(handler.routingKey(), new AnnotationRouter.HandlerMethod(bean, method));
-                }
-                if (handler.routingKeys() != null) {
-                    for (String routingKey : handler.routingKeys()) {
-                        annotationProcessor.registerHandler(routingKey, new AnnotationRouter.HandlerMethod(bean, method));
-                    }
-                }
-            }
-        }
-
         return bean;
     }
 }

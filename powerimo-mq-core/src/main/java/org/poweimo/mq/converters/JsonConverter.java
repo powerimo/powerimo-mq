@@ -27,6 +27,7 @@ import java.util.Map;
 @Getter
 public class JsonConverter implements MessageConverter {
     private final ObjectMapper mapper;
+    private final static String SPRING_DATA_CLASS_HEADER = "__TypeId__";
 
     /**
      * Default constructor that initializes the ObjectMapper with registered modules
@@ -88,6 +89,7 @@ public class JsonConverter implements MessageConverter {
                 .body(bytes)
                 .routingKey(envelope.getRoutingKey())
                 .envelope(envelope)
+                .amqpBasicProperties(basicProperties)
                 .build();
 
         String bodyAsString = null;
@@ -95,22 +97,9 @@ public class JsonConverter implements MessageConverter {
             bodyAsString = new String(bytes, StandardCharsets.UTF_8);
         }
 
-        Object headerClassName = basicProperties.getHeaders() != null
-                ? basicProperties.getHeaders().get(MqConst.DATA_CLASS_HEADER)
-                : null;
+        var className = this.extractDataClassName(message);
 
-        if (headerClassName != null) {
-            String className;
-            if (headerClassName instanceof String) {
-                className = (String) headerClassName;
-            } else if (headerClassName instanceof byte[]) {
-                className = new String((byte[]) headerClassName, StandardCharsets.UTF_8);
-            } else if (headerClassName instanceof LongString) {
-                className = headerClassName.toString();
-            } else {
-                throw new IllegalArgumentException("Unsupported header type for dataClassName: " + headerClassName.getClass());
-            }
-
+        if (className != null) {
             Class<?> cls = Class.forName(className);
             message.setDataClassName(cls.getCanonicalName());
 
@@ -134,5 +123,32 @@ public class JsonConverter implements MessageConverter {
         return message;
     }
 
+    public String extractDataClassName(Message message) {
+        Object headerClassName = message.getAmqpBasicProperties().getHeaders() != null
+                ? message.getAmqpBasicProperties().getHeaders().get(MqConst.DATA_CLASS_HEADER)
+                : null;
+
+        // Spring support
+        if (headerClassName == null) {
+            headerClassName = message.getAmqpBasicProperties().getHeaders().get(SPRING_DATA_CLASS_HEADER);
+        }
+
+        if (headerClassName != null) {
+            String className;
+
+            // class name could be represented in different formats
+            if (headerClassName instanceof String) {
+                className = (String) headerClassName;
+            } else if (headerClassName instanceof byte[]) {
+                className = new String((byte[]) headerClassName, StandardCharsets.UTF_8);
+            } else if (headerClassName instanceof LongString) {
+                className = headerClassName.toString();
+            } else {
+                throw new IllegalArgumentException("Unsupported header type for dataClassName: " + headerClassName.getClass());
+            }
+            return className;
+        }
+        return null;
+    }
 
 }

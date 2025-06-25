@@ -1,12 +1,17 @@
 package org.powerimo.mq.routers;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.poweimo.mq.Message;
+import org.poweimo.mq.annotations.RabbitMessageHandler;
+import org.poweimo.mq.annotations.RabbitDefaultHandler;
 import org.poweimo.mq.enums.RouteResolution;
 import org.poweimo.mq.routers.BaseRouter;
 import org.powerimo.mq.spring.RabbitAnnotationProcessor;
-import org.springframework.context.ApplicationContext;
+import org.springframework.aop.support.AopUtils;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -20,8 +25,9 @@ import java.util.HashMap;
 @RequiredArgsConstructor
 @Slf4j
 public class AnnotationRouter extends BaseRouter implements RabbitAnnotationProcessor {
-    private final ApplicationContext context;
-    private final HashMap<String, Object> messageListeners = new HashMap<>();
+
+    @Getter
+    private final HashMap<String, ListenerDescriptor> messageListeners = new HashMap<>();
     private final HashMap<String, HandlerMethod> messageHandlers = new HashMap<>();
 
     @Override
@@ -29,7 +35,7 @@ public class AnnotationRouter extends BaseRouter implements RabbitAnnotationProc
         var routingKey = message.getRoutingKey();
         var handler = findHandlerMethod(routingKey);
 
-        if (handler!=null) {
+        if (handler != null) {
             try {
                 handle(handler, message);
             } catch (Exception ex) {
@@ -80,8 +86,10 @@ public class AnnotationRouter extends BaseRouter implements RabbitAnnotationProc
     }
 
     public void registerListener(String queue, Object bean) {
-        messageListeners.put(queue, bean);
+        ListenerDescriptor descriptor = new ListenerDescriptor(bean, null);
+        messageListeners.put(queue, descriptor);
         log.info("✔️ Registered MQ message listener: {} -> {}", queue, bean.getClass().getCanonicalName());
+        processListener(descriptor);
     }
 
     public void registerHandler(String routingKey, HandlerMethod method) {
@@ -92,11 +100,93 @@ public class AnnotationRouter extends BaseRouter implements RabbitAnnotationProc
         );
     }
 
+    protected void processListener(ListenerDescriptor descriptor) {
+        Class<?> clazz = AopUtils.getTargetClass(descriptor.bean);
+
+        for (Method method : clazz.getDeclaredMethods()) {
+
+            // RabbitMessageHandler annotation
+            if (method.isAnnotationPresent(RabbitMessageHandler.class)) {
+                RabbitMessageHandler handler = method.getAnnotation(RabbitMessageHandler.class);
+                method.setAccessible(true);
+
+                if (handler.routingKey() != null && !handler.routingKey().isEmpty()) {
+                    registerHandler(handler.routingKey(), new AnnotationRouter.HandlerMethod(descriptor.bean, method));
+                }
+                if (handler.routingKeys() != null) {
+                    for (String routingKey : handler.routingKeys()) {
+                        registerHandler(routingKey, new AnnotationRouter.HandlerMethod(descriptor.bean, method));
+                    }
+                }
+            }
+
+            // RabbitUnknownHandler
+            if (method.isAnnotationPresent(RabbitDefaultHandler.class)) {
+                if (descriptor.defaultHandlerMethod == null) {
+                    method.setAccessible(true);
+                    descriptor.defaultHandlerMethod = new HandlerMethod(descriptor.bean, method);
+                    log.info("🪝 Default message handler found: {}.{}",
+                            descriptor.bean.getClass().getSimpleName(),
+                            method.getName());
+                }
+            }
+
+        }
+    }
+
+    /**
+     * <p>Find listener by queue name</p>
+     *
+     * @param queue queue name
+     * @return descriptor
+     */
+    public ListenerDescriptor findListenerDescriptor(String queue) {
+        return messageListeners.get(queue);
+    }
+
+    /**
+     * <p>Find listener descriptor by bean</p>
+     *
+     * @param bean Spring bean
+     * @return descriptor
+     */
+    public ListenerDescriptor findListenerDescriptor(Object bean) {
+        for (var entry : messageListeners.entrySet()) {
+            if (entry.getValue().bean == bean) {
+                return findListenerDescriptor(entry.getKey());
+            }
+        }
+        return null;
+    }
+
     /**
      * <p>Link to bean method</p>
      *
-     * @param bean a {@link java.lang.Object} object
+     * @param bean   a {@link java.lang.Object} object
      * @param method a {@link java.lang.reflect.Method} object
      */
-    public record HandlerMethod(Object bean, Method method) {}
+    public record HandlerMethod(Object bean, Method method) {
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    public static class ListenerDescriptor {
+        private Object bean;
+        private HandlerMethod defaultHandlerMethod;
+    }
+
+
+    @Override
+    protected RouteResolution handleUnknown(Message message) {
+        for (var entry : messageListeners.entrySet()) {
+            var descriptor = entry.getValue();
+            if (descriptor.defaultHandlerMethod != null) {
+                handle(descriptor.defaultHandlerMethod, message);
+                return RouteResolution.ACKNOWLEDGE;
+            }
+        }
+        return RouteResolution.DLQ;
+    }
+
 }

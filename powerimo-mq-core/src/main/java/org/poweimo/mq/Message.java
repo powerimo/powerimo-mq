@@ -1,6 +1,8 @@
 package org.poweimo.mq;
 
+import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Envelope;
+import com.rabbitmq.client.impl.AMQBasicProperties;
 import lombok.*;
 
 /**
@@ -21,8 +23,8 @@ public class Message {
     private String dataProtocolVersion;
     private String dataClassName;
     private Object payload;
-
     private Envelope envelope;
+    private AMQP.BasicProperties amqpBasicProperties;
 
     /**
      * <p>getPayloadClass.</p>
@@ -34,4 +36,5 @@ public class Message {
             return null;
         return payload.getClass();
     }
+
 }

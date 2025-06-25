@@ -37,6 +37,8 @@ public class SendController {
         data.setIntAttr(123);
         rabbitPublisher.publish("key4.event", data);
         rabbitPublisher.publish("key5.event", data);
+        rabbitPublisher.publish("key6.event", data);
+        rabbitPublisher.publish("key7.event", data);
         return ResponseEntity.ok().body("Sent");
     }
 

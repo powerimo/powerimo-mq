@@ -63,13 +63,12 @@ public class RabbitAutoConfiguration {
     /**
      * <p>rabbitMessageRouter.</p>
      *
-     * @param applicationContext a {@link org.springframework.context.ApplicationContext} object
      * @return a {@link org.poweimo.mq.routers.MessageRouter} object
      */
     @Bean
     @ConditionalOnMissingBean
-    public MessageRouter rabbitMessageRouter(ApplicationContext applicationContext) {
-        return new AnnotationRouter(applicationContext);
+    public MessageRouter rabbitMessageRouter() {
+        return new AnnotationRouter();
     }
 
     /**
@@ -145,6 +144,12 @@ public class RabbitAutoConfiguration {
         return starter;
     }
 
+    /**
+     * <p>PostProcessor scans beans for Listener annotation and register these into router</p>
+     *
+     * @param messageRouter Rabbit message router
+     * @return a PostProcessor
+     */
     @Bean
     public RabbitMessageHandlerPostProcessor rabbitMessageHandlerPostProcessor(MessageRouter messageRouter) {
         return new RabbitMessageHandlerPostProcessor(messageRouter);

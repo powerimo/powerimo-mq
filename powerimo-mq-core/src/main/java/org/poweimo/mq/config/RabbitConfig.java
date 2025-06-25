@@ -35,6 +35,13 @@ public interface RabbitConfig {
      * @return a {@link java.lang.String} object
      */
     String getPassword();
+
+    /**
+     * <p>True if confirm is needed otherwise False</p>
+     *
+      * @return a boolean
+     */
+    boolean getConfirmPublish();
     /**
      * <p>showConnectionsParameters.</p>
      *

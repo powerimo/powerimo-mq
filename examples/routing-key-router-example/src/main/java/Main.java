@@ -61,7 +61,7 @@ public class Main {
     public static void sendSampleMessage(String routingKey) {
         var data = SampleData.builder()
                 .attr1("value1")
-                .attr1("value2")
+                .attr2("value2")
                 .build();
         publisher.publish(routingKey, data);
         log.info("Published: {}", data);

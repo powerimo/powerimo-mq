@@ -37,7 +37,7 @@ Add the dependency to your Spring Boot project:
 <dependency>
   <groupId>org.powerimo</groupId>
   <artifactId>powerimo-mq-starter</artifactId>
-  <version>1.0.1</version>
+  <version>1.0.2</version>
 </dependency>
 ```
 

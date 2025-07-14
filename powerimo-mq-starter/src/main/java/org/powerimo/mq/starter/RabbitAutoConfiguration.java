@@ -151,7 +151,7 @@ public class RabbitAutoConfiguration {
      * @return a PostProcessor
      */
     @Bean
-    public RabbitMessageHandlerPostProcessor rabbitMessageHandlerPostProcessor(MessageRouter messageRouter) {
+    public static RabbitMessageHandlerPostProcessor rabbitMessageHandlerPostProcessor(MessageRouter messageRouter) {
         return new RabbitMessageHandlerPostProcessor(messageRouter);
     }
 }

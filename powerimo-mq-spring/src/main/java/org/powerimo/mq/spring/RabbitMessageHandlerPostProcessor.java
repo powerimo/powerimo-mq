@@ -1,15 +1,10 @@
 package org.powerimo.mq.spring;
 
 import lombok.extern.slf4j.Slf4j;
-import org.poweimo.mq.annotations.RabbitMessageHandler;
-import org.poweimo.mq.annotations.RabbitMessageListener;
-import org.poweimo.mq.routers.MessageRouter;
-import org.powerimo.mq.routers.AnnotationRouter;
+import org.powerimo.mq.annotations.RabbitMessageListener;
+import org.powerimo.mq.routers.MessageRouter;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.stereotype.Component;
-
-import java.lang.reflect.Method;
 
 @Slf4j
 public class RabbitMessageHandlerPostProcessor implements BeanPostProcessor {

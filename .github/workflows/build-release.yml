@@ -1,9 +1,5 @@
 name: Build
 
-env:
-  OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-  OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-
 on:
   push:
     branches:
@@ -14,27 +10,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-
-    - name: Cache Maven packages
-      uses: actions/cache@v4
-      with:
-        path: ~/.m2/repository
-        key: maven-${{ runner.os }}-global
-        restore-keys: |
-          maven-${{ runner.os }}-
-          maven-
+    - uses: actions/checkout@v5
 
     - name: Determine Release Version
       id: set-version
-      if: startsWith(github.ref, 'refs/heads/release/')
       run: |
         RELEASE_VERSION=$(echo "${GITHUB_REF#refs/heads/release/}")
         echo "RELEASE_VERSION=${RELEASE_VERSION}" >> $GITHUB_ENV
         echo "Release version detected: ${RELEASE_VERSION}"
 
     - name: Set up JDK 17
-      uses: actions/setup-java@v4
+      uses: actions/setup-java@v5
       with:
         java-version: '17'
         distribution: 'temurin'
@@ -44,8 +30,14 @@ jobs:
         server-password: OSSRH_PASSWORD
         overwrite-settings: true
 
-    - name: Build with Maven
-      run: mvn -B clean package verify deploy -Drevision=${{ env.RELEASE_VERSION }} --file pom.xml
+    - name: Build and Test
+      run: mvn -B clean verify -Drevision=${{ env.RELEASE_VERSION }} --file pom.xml
+      env:
+        OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+        OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+
+    - name: Deploy to Maven Central
+      run: mvn -B deploy -DskipTests -Drevision=${{ env.RELEASE_VERSION }} --file pom.xml
       env:
         MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_KEY_PASSPHRASE }}
         MAVEN_GPG_KEY: ${{ secrets.GPG_PRIVATE_KEY }}

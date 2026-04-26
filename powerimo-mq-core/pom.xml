@@ -16,8 +16,6 @@
     <url>https://github.com/powerimo/powerimo-mq</url>
 
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -25,18 +23,19 @@
         <dependency>
             <groupId>org.powerimo</groupId>
             <artifactId>powerimo-common</artifactId>
-            <version>1.2.0</version>
+            <version>1.4.0</version>
         </dependency>
 
         <dependency>
             <groupId>com.rabbitmq</groupId>
             <artifactId>amqp-client</artifactId>
-            <version>5.25.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.36</version>
+            <version>5.30.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>

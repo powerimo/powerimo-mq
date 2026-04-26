@@ -3,9 +3,9 @@ package org.powerimo.mq.starter;
 import com.rabbitmq.client.Consumer;
 import lombok.Getter;
 import lombok.Setter;
-import org.poweimo.mq.config.RabbitConfig;
-import org.poweimo.mq.converters.MessageConverter;
-import org.poweimo.mq.routers.MessageRouter;
+import org.powerimo.mq.config.RabbitConfig;
+import org.powerimo.mq.converters.MessageConverter;
+import org.powerimo.mq.routers.MessageRouter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**

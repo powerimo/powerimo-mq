@@ -5,11 +5,10 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.poweimo.mq.Message;
-import org.poweimo.mq.annotations.RabbitMessageHandler;
-import org.poweimo.mq.annotations.RabbitDefaultHandler;
-import org.poweimo.mq.enums.RouteResolution;
-import org.poweimo.mq.routers.BaseRouter;
+import org.powerimo.mq.Message;
+import org.powerimo.mq.annotations.RabbitMessageHandler;
+import org.powerimo.mq.annotations.RabbitDefaultHandler;
+import org.powerimo.mq.enums.RouteResolution;
 import org.powerimo.mq.spring.RabbitAnnotationProcessor;
 import org.springframework.aop.support.AopUtils;
 
@@ -61,7 +60,7 @@ public class AnnotationRouter extends BaseRouter implements RabbitAnnotationProc
      * <p>handle.</p>
      *
      * @param handler a {@link org.powerimo.mq.routers.AnnotationRouter.HandlerMethod} object
-     * @param message a {@link org.poweimo.mq.Message} object
+     * @param message a {@link Message} object
      */
     public void handle(HandlerMethod handler, Message message) {
         Method method = handler.method;

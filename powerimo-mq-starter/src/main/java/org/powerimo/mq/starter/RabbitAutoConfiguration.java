@@ -2,17 +2,17 @@ package org.powerimo.mq.starter;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.poweimo.mq.config.RabbitConfig;
-import org.poweimo.mq.consumers.StandardConsumer;
-import org.poweimo.mq.converters.JsonConverter;
-import org.poweimo.mq.converters.MessageConverter;
-import org.poweimo.mq.exceptions.InvalidMqConfigurationException;
-import org.poweimo.mq.exceptions.MqListenerException;
-import org.poweimo.mq.listeners.RabbitListener;
-import org.poweimo.mq.listeners.RabbitListenerImpl;
-import org.poweimo.mq.publishers.DefaultRabbitPublisher;
-import org.poweimo.mq.publishers.RabbitPublisher;
-import org.poweimo.mq.routers.MessageRouter;
+import org.powerimo.mq.config.RabbitConfig;
+import org.powerimo.mq.consumers.StandardConsumer;
+import org.powerimo.mq.converters.JsonConverter;
+import org.powerimo.mq.converters.MessageConverter;
+import org.powerimo.mq.exceptions.InvalidMqConfigurationException;
+import org.powerimo.mq.exceptions.MqListenerException;
+import org.powerimo.mq.listeners.RabbitListener;
+import org.powerimo.mq.listeners.RabbitListenerImpl;
+import org.powerimo.mq.publishers.DefaultRabbitPublisher;
+import org.powerimo.mq.publishers.RabbitPublisher;
+import org.powerimo.mq.routers.MessageRouter;
 import org.powerimo.mq.routers.AnnotationRouter;
 import org.powerimo.mq.spring.RabbitMessageHandlerPostProcessor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -52,7 +52,7 @@ public class RabbitAutoConfiguration {
      * <p>rabbitMessageConverter.</p>
      *
      * @param objectMapper a {@link com.fasterxml.jackson.databind.ObjectMapper} object
-     * @return a {@link org.poweimo.mq.converters.MessageConverter} object
+     * @return a {@link MessageConverter} object
      */
     @Bean
     @ConditionalOnMissingBean
@@ -63,7 +63,7 @@ public class RabbitAutoConfiguration {
     /**
      * <p>rabbitMessageRouter.</p>
      *
-     * @return a {@link org.poweimo.mq.routers.MessageRouter} object
+     * @return a {@link MessageRouter} object
      */
     @Bean
     @ConditionalOnMissingBean
@@ -75,10 +75,10 @@ public class RabbitAutoConfiguration {
      * <p>rabbitConfig.</p>
      *
      * @param properties a {@link org.powerimo.mq.starter.RabbitMqProperties} object
-     * @param messageConverter a {@link org.poweimo.mq.converters.MessageConverter} object
-     * @param messageRouter a {@link org.poweimo.mq.routers.MessageRouter} object
+     * @param messageConverter a {@link MessageConverter} object
+     * @param messageRouter a {@link MessageRouter} object
      * @param applicationContext a {@link org.springframework.context.ApplicationContext} object
-     * @return a {@link org.poweimo.mq.config.RabbitConfig} object
+     * @return a {@link RabbitConfig} object
      */
     @Bean
     @ConditionalOnMissingBean
@@ -106,8 +106,8 @@ public class RabbitAutoConfiguration {
     /**
      * <p>rabbitListener.</p>
      *
-     * @param rabbitConfig a {@link org.poweimo.mq.config.RabbitConfig} object
-     * @return a {@link org.poweimo.mq.listeners.RabbitListener} object
+     * @param rabbitConfig a {@link RabbitConfig} object
+     * @return a {@link RabbitListener} object
      */
     @Bean
     @ConditionalOnMissingBean
@@ -118,8 +118,8 @@ public class RabbitAutoConfiguration {
     /**
      * <p>rabbitPublisher.</p>
      *
-     * @param rabbitConfig a {@link org.poweimo.mq.config.RabbitConfig} object
-     * @return a {@link org.poweimo.mq.publishers.RabbitPublisher} object
+     * @param rabbitConfig a {@link RabbitConfig} object
+     * @return a {@link RabbitPublisher} object
      */
     @Bean
     @ConditionalOnMissingBean
@@ -130,11 +130,11 @@ public class RabbitAutoConfiguration {
     /**
      * <p>listenerStarter.</p>
      *
-     * @param rabbitListener a {@link org.poweimo.mq.listeners.RabbitListener} object
+     * @param rabbitListener a {@link RabbitListener} object
      * @param rabbitMqProperties a {@link org.powerimo.mq.starter.RabbitMqProperties} object
      * @return a {@link org.powerimo.mq.starter.ListenerStarter} object
-     * @throws org.poweimo.mq.exceptions.InvalidMqConfigurationException if any.
-     * @throws org.poweimo.mq.exceptions.MqListenerException if any.
+     * @throws InvalidMqConfigurationException if any.
+     * @throws MqListenerException if any.
      */
     @Bean
     @ConditionalOnMissingBean

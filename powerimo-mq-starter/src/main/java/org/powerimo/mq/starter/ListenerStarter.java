@@ -2,9 +2,9 @@ package org.powerimo.mq.starter;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.poweimo.mq.exceptions.InvalidMqConfigurationException;
-import org.poweimo.mq.exceptions.MqListenerException;
-import org.poweimo.mq.listeners.RabbitListener;
+import org.powerimo.mq.exceptions.InvalidMqConfigurationException;
+import org.powerimo.mq.exceptions.MqListenerException;
+import org.powerimo.mq.listeners.RabbitListener;
 
 /**
  * <p>ListenerStarter class.</p>
@@ -21,7 +21,7 @@ public class ListenerStarter {
     /**
      * <p>Constructor for ListenerStarter.</p>
      *
-     * @param listener a {@link org.poweimo.mq.listeners.RabbitListener} object
+     * @param listener a {@link RabbitListener} object
      * @param properties a {@link org.powerimo.mq.starter.RabbitMqProperties} object
      */
     public ListenerStarter(RabbitListener listener, RabbitMqProperties properties) {
@@ -32,8 +32,8 @@ public class ListenerStarter {
     /**
      * <p>checkAutoStart.</p>
      *
-     * @throws org.poweimo.mq.exceptions.InvalidMqConfigurationException if any.
-     * @throws org.poweimo.mq.exceptions.MqListenerException if any.
+     * @throws InvalidMqConfigurationException if any.
+     * @throws MqListenerException if any.
      */
     public void checkAutoStart() throws InvalidMqConfigurationException, MqListenerException {
         if (properties.isAutoStart()) {
